@@ -56,7 +56,7 @@ if ! command -v sudo >/dev/null 2>&1; then
 fi
 
 printf 'Validating sudo credentials for user %s...\n' "$NORMAL_USER"
-if ! su - "$NORMAL_USER" -c "script -q /dev/null sudo -v"; then
+if ! su - "$NORMAL_USER" -c "script -q /dev/null sh -c 'sudo -v'"; then
     err "Failed to validate sudo credentials for $NORMAL_USER. Exiting."
     exit 1
 fi
