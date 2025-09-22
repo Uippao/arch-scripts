@@ -66,17 +66,6 @@ if ! command -v sudo >/dev/null 2>&1; then
     exit 1
 fi
 
-printf 'Checking if user %s is authenticated with sudo...\n' "$NORMAL_USER"
-if ! sudo -n true >/dev/null 2>&1; then
-    err "User '$NORMAL_USER' is not currently authenticated with sudo."
-    err "Please run the following first:"
-    err "  sudo -v"
-    err "Then immediately run this script again."
-    exit 1
-else
-    printf "User %s has valid sudo credentials.\n" "$NORMAL_USER"
-fi
-
 AUR_HELPER=""
 if command -v yay >/dev/null 2>&1; then
     AUR_HELPER="yay"
@@ -105,16 +94,14 @@ run_as_user() {
     USERNAME="$1"
     shift
     if [ "$USERNAME" = "$(id -un)" ]; then
-        # If we're already the target user, run directly
         "$@"
     else
-        su - "$USERNAME" -c "$*"
+        su -m "$USERNAME" -c "$*"
     fi
     return $?
 }
 
 run_as_root() {
-    # Use su to become root for system operations
     su - root -c "$*"
     return $?
 }
