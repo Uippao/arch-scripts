@@ -56,10 +56,10 @@ if ! command -v sudo >/dev/null 2>&1; then
 fi
 
 printf 'Validating sudo credentials for user %s...\n' "$NORMAL_USER"
-su - "$NORMAL_USER" -c "sudo -v" || {
+if ! su - "$NORMAL_USER" -c "script -q /dev/null sudo -v"; then
     err "Failed to validate sudo credentials for $NORMAL_USER. Exiting."
     exit 1
-}
+fi
 
 AUR_HELPER=""
 if command -v yay >/dev/null 2>&1; then
