@@ -1,8 +1,8 @@
 #!/bin/sh
 # sudoas-migrate.sh
-# POSIX-compliant migration helper to move from sudo -> doas + fudo on Arch.
+# POSIX-compliant migration helper to move from sudo to a usable doas setup on Arch.
 # Must be run as root. Usage: ./sudoas-migrate.sh <your-nonroot-username>
-# Review before running.
+# Review before running. Use at your own risk.
 
 set -u
 
