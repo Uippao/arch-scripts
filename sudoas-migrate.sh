@@ -54,14 +54,17 @@ if ! command -v sudo >/dev/null 2>&1; then
     err "sudo is not installed. The script is designed to migrate you from sudo to a sudo-doas hybrid or pure doas setup. It requires sudo to function."
     exit 1
 fi
-tmpfile=$(mktemp)
-printf 'Validating sudo credentials for user %s...\n' "$NORMAL_USER"
-if ! su - "$NORMAL_USER" -c "script -q $tmpfile -c 'sudo -v'"; then
-    err "Failed to validate sudo credentials for $NORMAL_USER. Exiting."
-    rm -f "$tmpfile"
+
+printf 'Checking if user %s is authenticated with sudo...\n' "$NORMAL_USER"
+if ! su - "$NORMAL_USER" -c 'sudo -n true' >/dev/null 2>&1; then
+    err "User '$NORMAL_USER' is not currently authenticated with sudo."
+    err "Please run the following as $NORMAL_USER in a terminal first:"
+    err "  sudo -v"
+    err "Then immediately run this script as root again."
     exit 1
+else
+    printf "User %s has valid sudo credentials.\n" "$NORMAL_USER"
 fi
-rm -f "$tmpfile"
 
 AUR_HELPER=""
 if command -v yay >/dev/null 2>&1; then
