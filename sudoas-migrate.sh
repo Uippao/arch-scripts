@@ -33,7 +33,6 @@ confirm_default_no() {
     esac
 }
 
-# Check if running as root - now we want to run as normal user
 if [ "$(id -u)" = "0" ]; then
     err "This script should now be run as a normal user, not root."
     err "It will use su to become root when necessary (excluding AUR operations)."
@@ -96,9 +95,8 @@ run_as_user() {
     if [ "$USERNAME" = "$(id -un)" ]; then
         "$@"
     else
-        su -m "$USERNAME" -c "$*"
+        su - "$USERNAME" -s /bin/sh -c "export PATH=/usr/local/bin:/usr/bin:/bin:\$HOME/.local/bin; $*"
     fi
-    return $?
 }
 
 run_as_root() {
